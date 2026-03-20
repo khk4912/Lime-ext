@@ -1,3 +1,3 @@
-# WXT + React
+<img src="./src/assets/icon.png" alt="Lime Ext Logo" width="80" />
 
-This template should help get you started developing with React in WXT.
+# Lime

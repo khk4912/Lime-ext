@@ -1,5 +1,4 @@
 import { defineConfig } from 'wxt'
-import version from './package.json' assert { type: 'json' }
 import path from 'path'
 import svgr from 'vite-plugin-svgr'
 import tailwindcss from '@tailwindcss/vite'
@@ -39,7 +38,7 @@ export default defineConfig({
   vite: () =>
     ({
       define: {
-        'import.meta.env.VITE_APP_VERSION': JSON.stringify(version)
+        __APP_VERSION__: JSON.stringify(process.env.npm_package_version)
       },
       resolve: {
         alias: {

@@ -1,5 +1,7 @@
 import ReactDOM from 'react-dom'
+
 import { PIPButton } from './PIPButton'
+import { ScreenshotButton } from './ScreenshotButton'
 
 const PlayerPortalStyle: React.CSSProperties = {
   display: 'flex',
@@ -28,6 +30,7 @@ export function PlayerButtonRenderer () {
   return (
     <PlayerButtonPortalContainer>
       <PIPButton />
+      <ScreenshotButton />
     </PlayerButtonPortalContainer>
   )
 }

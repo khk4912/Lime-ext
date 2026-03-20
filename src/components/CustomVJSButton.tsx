@@ -17,13 +17,17 @@ const VJSButtonStyle: React.CSSProperties = {
 
 type CustomVJSButtonProps = {
   className?: string
+  title?: string
   children?: React.ReactNode
+  onClick?: () => void
 }
-export function CustomVJSButton ({ className, children }: CustomVJSButtonProps) {
+export function CustomVJSButton ({ className, title, children, onClick }: CustomVJSButtonProps) {
   return (
     <button
       className={`vjs-control vjs-button ${styles.limeCustomVjsButton} ${className ?? ''} `}
       style={VJSButtonStyle}
+      onClick={onClick}
+      title={title}
     >
       {children}
     </button>

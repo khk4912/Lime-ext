@@ -1,5 +1,5 @@
 import { createRoot, type Root } from 'react-dom/client'
-import { PlayerButtonRenderer } from '@/components/Buttons'
+import { PlayerButtonRenderer } from '@/components/PlayerButtonRenderer'
 export function RenderButtons () {
   let div = document.createElement('div')
   div.id = 'lime-buttons'

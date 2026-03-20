@@ -1,0 +1,34 @@
+.lime-custom-vjs-button {
+  position: relative !important;
+  --b: 1px !important;
+
+  width: 40px;
+  height: 40px;
+  background-color: var(--dim-200);
+}
+
+
+.lime-custom-vjs-button::before {
+  content: "" !important;
+  position: absolute !important;
+  inset: 0 !important;
+  padding: var(--b) !important;
+  border-radius: inherit !important;
+  pointer-events: none !important;
+
+  background: linear-gradient(164deg, rgba(255, 255, 255, 0.8) 8.97%, rgba(255, 255, 255, 0.05) 33.82%, rgba(255, 255, 255, 0) 54.53%, rgba(255, 255, 255, 0.05) 75.25%, rgba(255, 255, 255, 0.4) 91.82%) !important;
+
+  -webkit-mask-image: linear-gradient(0deg, #000, #000), linear-gradient(0deg, #000, #000) !important;
+  -webkit-mask-clip: content-box, border-box !important;
+  -webkit-mask-origin: content-box, border-box !important;
+  -webkit-mask-composite: xor !important;
+
+  mask-image: linear-gradient(0deg, #000, #000), linear-gradient(0deg, #000, #000) !important;
+  mask-clip: content-box, border-box !important;
+  mask-origin: content-box, border-box !important;
+  mask-composite: exclude !important;
+}
+
+.lime-custom-vjs-button:hover {
+  background: var(--light-overlay-10) !important;
+}

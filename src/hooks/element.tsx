@@ -29,12 +29,14 @@ interface UsePortalProps {
   id?: string
   targetSelector?: string
   position?: InsertPositions
+  style?: React.CSSProperties
 }
 
-export function usePortal ({ targetSelector, id, position = 'after' }: UsePortalProps) {
+export function usePortal ({ targetSelector, id, position = 'after', style }: UsePortalProps) {
   const [div] = useState(() => {
     const d = document.createElement('div')
     if (id) { d.id = id }
+    if (style) { Object.assign(d.style, style) }
 
     return d
   })

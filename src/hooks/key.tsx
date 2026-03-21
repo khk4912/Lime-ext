@@ -44,8 +44,12 @@ export function useShortcut (key: string | string[], callback: () => void): void
       // 입력 요소가 검색창, 채팅창 등의 입력 요소일 경우 무시
       if (activeElement instanceof HTMLInputElement ||
         activeElement instanceof HTMLTextAreaElement ||
-        activeElement instanceof HTMLPreElement ||
-        activeElement instanceof HTMLDivElement) {
+        activeElement instanceof HTMLPreElement) {
+        return
+      }
+
+      // 채팅창 무시
+      if (activeElement?.getAttribute('data-rune') === 'ChatEditor') {
         return
       }
 

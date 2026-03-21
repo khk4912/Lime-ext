@@ -2,6 +2,7 @@ import ReactDOM from 'react-dom'
 
 import { PIPButton } from './PIPButton'
 import { ScreenshotButton } from './ScreenshotButton'
+import { useOptions } from '@/providers/useOptions'
 
 const PlayerPortalStyle: React.CSSProperties = {
   display: 'flex',
@@ -15,6 +16,7 @@ function PlayerButtonPortalContainer ({ children }: { children: React.ReactNode 
       console.log('PlayerButtonPortalContainer unmounted')
     }
   }, [])
+
   const portalTarget = usePortal({
     id: 'lime-button-portal',
     targetSelector: '.vjs-control.vjs-button.vjs-video-edit-open',
@@ -27,10 +29,16 @@ function PlayerButtonPortalContainer ({ children }: { children: React.ReactNode 
 }
 
 export function PlayerButtonRenderer () {
+  const { options, isLoading } = useOptions()
+
+  if (isLoading || (!options.pip && !options.screenshot)) {
+    return null
+  }
+
   return (
     <PlayerButtonPortalContainer>
-      <PIPButton />
-      <ScreenshotButton />
+      {options.pip && <PIPButton />}
+      {options.screenshot && <ScreenshotButton />}
     </PlayerButtonPortalContainer>
   )
 }

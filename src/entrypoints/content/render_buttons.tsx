@@ -1,12 +1,19 @@
 import { createRoot, type Root } from 'react-dom/client'
 import { PlayerButtonRenderer } from '@/components/PlayerButtonRenderer'
+import { OptionProvider } from '@/providers/OptionProvider'
+
 export function RenderButtons () {
   let div = document.createElement('div')
   div.id = 'lime-buttons'
 
   document.body.appendChild(div)
 
-  let root = inject(<PlayerButtonRenderer />, div)
+  let root = inject(
+    <OptionProvider>
+      <PlayerButtonRenderer />
+    </OptionProvider>,
+    div
+  )
 
   window.navigation?.addEventListener('navigate', () => {
     root.unmount()
@@ -16,7 +23,12 @@ export function RenderButtons () {
     div.id = 'lime-buttons'
 
     document.body.appendChild(div)
-    root = inject(<PlayerButtonRenderer />, div)
+    root = inject(
+      <OptionProvider>
+        <PlayerButtonRenderer />
+      </OptionProvider>,
+      div
+    )
   })
 }
 

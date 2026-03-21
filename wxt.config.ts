@@ -18,7 +18,7 @@ export default defineConfig({
     action: {
       default_title: 'Lime - 씨미 도우미',
     },
-    // permissions: ['storage', 'downloads'],
+    permissions: ['storage'],
     web_accessible_resources: [
       {
         resources: ['src/*', 'pages/*', 'assets/*', '*.html'],

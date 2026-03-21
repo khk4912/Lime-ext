@@ -1,6 +1,7 @@
 import { storage } from '#imports'
 import { useEffect, useRef, useState } from 'react'
 import { getStreamInfo } from '@/utils/steram_info'
+import { sanitizeFileName } from '@/utils/file'
 
 type RecordStatus = 'recording' | 'stopped'
 
@@ -200,7 +201,7 @@ function download (recordInfo: RecordInfo): void {
   const a = document.createElement('a')
   a.href =
     recordInfo.resultBlobURL
-  a.download = `${recordInfo.streamInfo.streamerName}_${duration.toFixed(2)}s.${recordInfo.isMP4 ? 'mp4' : 'webm'}`
+  a.download = sanitizeFileName(`${recordInfo.streamInfo.streamerName}_${duration.toFixed(2)}s.${recordInfo.isMP4 ? 'mp4' : 'webm'}`)
   a.click()
 
   URL.revokeObjectURL(recordInfo.resultBlobURL)

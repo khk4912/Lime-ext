@@ -2,13 +2,20 @@ import { getStreamInfo } from '@/utils/steram_info'
 import { CustomVJSButton } from './CustomVJSButton'
 import ScreenshotIcon from '@/assets/screenshot.svg?react'
 import { sanitizeFileName, ymdhms } from '@/utils/file'
+import { useShortcut } from '@/hooks/key'
 
 export function ScreenshotButton () {
+  const onClick = () => {
+    downloadVideoScreenshot()
+  }
+
+  useShortcut('S', onClick)
+
   return (
     <CustomVJSButton
       className='lime-screenshot-button'
-      title='스크린샷'
-      onClick={() => { downloadVideoScreenshot() }}
+      title='스크린샷 (S)'
+      onClick={onClick}
     >
       <ScreenshotIcon style={{ padding: '3px' }} />
     </CustomVJSButton>

@@ -1,14 +1,20 @@
 import { CustomVJSButton } from './CustomVJSButton'
+import { useShortcut } from '@/hooks/key'
+
 import PIPIcon from '@/assets/pip.svg?react'
 
 export function PIPButton () {
+  const onClick = () => {
+    makeVideoPIP().catch(() => { })
+  }
+
+  useShortcut('P', onClick)
+
   return (
     <CustomVJSButton
       className='lime-pip-button'
-      title='PIP 모드 토글'
-      onClick={() => {
-        makeVideoPIP().catch(() => { })
-      }}
+      title='PIP 모드 토글 (P)'
+      onClick={onClick}
     >
       <PIPIcon style={{ padding: '3px' }} />
     </CustomVJSButton>

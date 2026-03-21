@@ -24,8 +24,9 @@ function PlayerButtonPortalContainer ({ children }: { children: React.ReactNode 
     style: PlayerPortalStyle
   })
 
-  const isNotMinimized = document.querySelector('.LiveScreenView.video_screen__0b0d8018.disabled') !== null
-  return portalTarget && isNotMinimized ? ReactDOM.createPortal(children, portalTarget) : null
+  // TODO: 나중에 minimized에 별도 스타일로 버튼 추가?
+  const isMinimized = document.querySelector('section.Layout')?.getAttribute('data-layout-video-state') !== 'screen'
+  return portalTarget && !isMinimized ? ReactDOM.createPortal(children, portalTarget) : null
 }
 
 export function PlayerButtonRenderer () {

@@ -1,4 +1,4 @@
-import styles from './CustomVJSButtons.module.css'
+import styles from './CustomVJSButton.module.css'
 
 const VJSButtonStyle: React.CSSProperties = {
   content: '',

@@ -73,17 +73,17 @@ function App () {
         >
           <Option
             optionKey='rec'
-            label='녹화'
+            label='녹화 (R)'
             description='녹화 버튼을 추가합니다.'
           />
           <Option
             optionKey='screenshot'
-            label='스크린샷'
+            label='스크린샷 (S)'
             description='스크린샷 버튼을 추가합니다.'
           />
           <Option
             optionKey='pip'
-            label='PIP'
+            label='PIP (P)'
             description='브라우저 PIP 버튼을 추가합니다.'
           />
         </div>

@@ -64,8 +64,9 @@ function App () {
 
   return (
     <>
-      <main className='flex-row h-80 w-full
-                     items-center px-8 text-zinc-50'
+      <main
+        className='flex-row h-80 w-full
+                   items-center px-8 text-zinc-50'
       >
         <Header />
         <div className='grid mt-5 border border-white/10

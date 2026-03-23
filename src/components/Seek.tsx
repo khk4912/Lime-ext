@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import ReactDOM from 'react-dom'
+
 import { useElementTarget, usePortal } from '@/hooks/element'
 import { useShortcut } from '@/hooks/key'
 
@@ -8,26 +9,35 @@ import LeftIcon from '@/assets/left.svg?react'
 import RightIcon from '@/assets/right.svg?react'
 
 type SeekDirection = 'left' | 'right' | null
-type BufferedRange = { start: number; end: number }
+
+type BufferedRange = {
+  start: number
+  end: number
+}
 
 interface IvsPlayerLike {
   getPosition(): number
   getBuffered(): BufferedRange | null
   seekTo(position: number): void
+  setRebufferToLive?(enabled: boolean): void
+}
+
+interface VideoJsTechLike {
+  getIVSPlayer?: () => IvsPlayerLike | undefined
 }
 
 interface VideoJsLikePlayer {
   getIVSPlayer?: () => IvsPlayerLike | undefined
-  tech?: (safe?: true) => { getIVSPlayer?: () => IvsPlayerLike | undefined } | null
+  tech?: (safe?: true) => VideoJsTechLike | null
+}
+
+interface VideoPlayerViewLike {
+  player?: VideoJsLikePlayer
 }
 
 interface RuneLike {
   getUnknownView(element: Element): unknown
 }
-
-type PlaybackTarget =
-  | { kind: 'ivs'; video: HTMLVideoElement; player: IvsPlayerLike }
-  | { kind: 'html'; video: HTMLVideoElement }
 
 declare global {
   interface Window {
@@ -35,8 +45,19 @@ declare global {
   }
 }
 
+type PlaybackTarget =
+  | {
+    kind: 'ivs'
+    video: HTMLVideoElement
+    player: IvsPlayerLike
+  }
+  | {
+    kind: 'html'
+    video: HTMLVideoElement
+  }
+
 const SEEK_SECONDS = 5
-const EDGE_GUARD = 1
+const EDGE_GUARD = 0
 
 const isObject = (value: unknown): value is Record<string, unknown> =>
   typeof value === 'object' && value !== null
@@ -48,22 +69,35 @@ function resolvePlaybackTarget (video: HTMLVideoElement): PlaybackTarget {
   if (root !== null && rune !== undefined) {
     const view = rune.getUnknownView(root)
 
-    if (isObject(view) && isObject(view.player)) {
-      const player = view.player as VideoJsLikePlayer
-      const ivs =
-        player.getIVSPlayer?.() ??
-        player.tech?.(true)?.getIVSPlayer?.()
+    if (isObject(view)) {
+      const maybeView = view as VideoPlayerViewLike
+      const player = maybeView.player
 
-      if (ivs !== undefined) {
-        return { kind: 'ivs', video, player: ivs }
+      if (player !== undefined) {
+        const ivs =
+          player.getIVSPlayer?.() ??
+          player.tech?.(true)?.getIVSPlayer?.()
+
+        if (ivs !== undefined) {
+          ivs.setRebufferToLive?.(false)
+
+          return {
+            kind: 'ivs',
+            video,
+            player: ivs
+          }
+        }
       }
     }
   }
 
-  return { kind: 'html', video }
+  return {
+    kind: 'html',
+    video
+  }
 }
 
-function getCurrentRange (target: PlaybackTarget): BufferedRange | null {
+function findCurrentRange (target: PlaybackTarget): BufferedRange | null {
   if (target.kind === 'ivs') {
     return target.player.getBuffered()
   }
@@ -84,20 +118,24 @@ function getCurrentRange (target: PlaybackTarget): BufferedRange | null {
 }
 
 function getCurrentPosition (target: PlaybackTarget): number {
-  return target.kind === 'ivs' ? target.player.getPosition() : target.video.currentTime
+  if (target.kind === 'ivs') {
+    return target.player.getPosition()
+  }
+
+  return target.video.currentTime
 }
 
-function setCurrentPosition (target: PlaybackTarget, position: number): void {
+function setCurrentPosition (target: PlaybackTarget, nextPosition: number): void {
   if (target.kind === 'ivs') {
-    target.player.seekTo(position)
+    target.player.seekTo(nextPosition)
     return
   }
 
-  target.video.currentTime = position
+  target.video.currentTime = nextPosition
 }
 
 function seekLeft (target: PlaybackTarget): void {
-  const range = getCurrentRange(target)
+  const range = findCurrentRange(target)
   if (range === null) return
 
   const next = Math.max(range.start + EDGE_GUARD, getCurrentPosition(target) - SEEK_SECONDS)
@@ -105,7 +143,7 @@ function seekLeft (target: PlaybackTarget): void {
 }
 
 function seekRight (target: PlaybackTarget): void {
-  const range = getCurrentRange(target)
+  const range = findCurrentRange(target)
   if (range === null) return
 
   const next = Math.min(range.end - EDGE_GUARD, getCurrentPosition(target) + SEEK_SECONDS)
@@ -176,7 +214,7 @@ function SeekLeftOverlay ({ active }: { active: boolean }) {
     <div className={`${style.seekLeft} ${style.seekOverlay} ${active ? style.seekActive : ''}`}>
       <div>
         <LeftIcon />
-        <p>-5초</p>
+        <p>- 5초</p>
       </div>
     </div>
   )
@@ -187,7 +225,7 @@ function SeekRightOverlay ({ active }: { active: boolean }) {
     <div className={`${style.seekRight} ${style.seekOverlay} ${active ? style.seekActive : ''}`}>
       <div>
         <RightIcon />
-        <p>+5초</p>
+        <p>+ 5초</p>
       </div>
     </div>
   )

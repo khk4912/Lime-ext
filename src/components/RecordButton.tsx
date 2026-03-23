@@ -24,7 +24,7 @@ export function RecordButton () {
         />
 
       </CustomVJSButton>
-      {!isRecording && <RecordOverlayRenderer />}
+      {isRecording && <RecordOverlayRenderer />}
     </>
   )
 }

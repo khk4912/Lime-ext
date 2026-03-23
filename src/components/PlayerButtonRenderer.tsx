@@ -12,13 +12,6 @@ const PlayerPortalStyle: React.CSSProperties = {
 } as const
 
 function PlayerButtonPortalContainer ({ children }: { children: React.ReactNode }) {
-  useEffect(() => {
-    console.log('PlayerButtonPortalContainer mounted')
-    return () => {
-      console.log('PlayerButtonPortalContainer unmounted')
-    }
-  }, [])
-
   const portalTarget = usePortal({
     id: 'lime-button-portal',
     targetSelector: '.vjs-control.vjs-button.vjs-video-edit-open',

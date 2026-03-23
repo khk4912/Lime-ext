@@ -1,7 +1,11 @@
 import { useOptions } from '@/providers/useOptions'
 import { Seeker } from './Seek'
 
-const Target = '.vjs-control-bar'
+const Target = '.vjs-control'
+
+const isLive = () => {
+  return window.location.pathname.endsWith('/live')
+}
 
 export function SeekerRenderer () {
   const { options, isLoading } = useOptions()
@@ -26,6 +30,6 @@ export function SeekerRenderer () {
   }
 
   return (
-    targetFound && <Seeker />
+    targetFound && isLive() && <Seeker />
   )
 }

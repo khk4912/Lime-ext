@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
 import ReactDOM from 'react-dom'
 
-import { useElementTarget, usePortal } from '@/hooks/element'
+import { usePortal } from '@/hooks/element'
 import { useShortcut } from '@/hooks/key'
+import { usePlaybackTarget, type BufferedRange, type PlaybackTarget } from '@/hooks/playback'
 
 import style from './Seek.module.css'
 import LeftIcon from '@/assets/left.svg?react'
@@ -10,92 +11,8 @@ import RightIcon from '@/assets/right.svg?react'
 
 type SeekDirection = 'left' | 'right' | null
 
-type BufferedRange = {
-  start: number
-  end: number
-}
-
-interface IvsPlayerLike {
-  getPosition(): number
-  getBuffered(): BufferedRange | null
-  seekTo(position: number): void
-  setRebufferToLive?(enabled: boolean): void
-}
-
-interface VideoJsTechLike {
-  getIVSPlayer?: () => IvsPlayerLike | undefined
-}
-
-interface VideoJsLikePlayer {
-  getIVSPlayer?: () => IvsPlayerLike | undefined
-  tech?: (safe?: true) => VideoJsTechLike | null
-}
-
-interface VideoPlayerViewLike {
-  player?: VideoJsLikePlayer
-}
-
-interface RuneLike {
-  getUnknownView(element: Element): unknown
-}
-
-declare global {
-  interface Window {
-    __rune__?: RuneLike
-  }
-}
-
-type PlaybackTarget =
-  | {
-    kind: 'ivs'
-    video: HTMLVideoElement
-    player: IvsPlayerLike
-  }
-  | {
-    kind: 'html'
-    video: HTMLVideoElement
-  }
-
 const SEEK_SECONDS = 5
 const EDGE_GUARD = 0.3
-
-const isObject = (value: unknown): value is Record<string, unknown> =>
-  typeof value === 'object' && value !== null
-
-function resolvePlaybackTarget (video: HTMLVideoElement): PlaybackTarget {
-  const root = video.closest('[data-rune="VideoPlayerView"]')
-  const rune = window.__rune__
-
-  if (root !== null && rune !== undefined) {
-    const view = rune.getUnknownView(root)
-
-    if (isObject(view)) {
-      const maybeView = view as VideoPlayerViewLike
-      const player = maybeView.player
-
-      if (player !== undefined) {
-        const ivs =
-          player.getIVSPlayer?.() ??
-          player.tech?.(true)?.getIVSPlayer?.()
-
-        if (ivs !== undefined) {
-          ivs.setRebufferToLive?.(false)
-
-          return {
-            kind: 'ivs',
-            video,
-            player: ivs
-          }
-        }
-      }
-    }
-  }
-
-  return {
-    kind: 'html',
-    video
-  }
-}
 
 function findCurrentRange (target: PlaybackTarget): BufferedRange | null {
   if (target.kind === 'ivs') {
@@ -151,18 +68,16 @@ function seekRight (target: PlaybackTarget): void {
 }
 
 export function Seeker () {
-  const videoElement = useElementTarget('video.vjs-tech')
-  const playbackRef = useRef<PlaybackTarget | null>(null)
+  const playbackTarget = usePlaybackTarget()
   const hideTimeoutRef = useRef<number | null>(null)
 
   const [activeDirection, setActiveDirection] = useState<SeekDirection>(null)
 
   useEffect(() => {
-    playbackRef.current =
-      videoElement instanceof HTMLVideoElement
-        ? resolvePlaybackTarget(videoElement)
-        : null
-  }, [videoElement])
+    if (playbackTarget?.kind === 'ivs') {
+      playbackTarget.player.setRebufferToLive?.(false)
+    }
+  }, [playbackTarget])
 
   const showOverlay = (direction: Exclude<SeekDirection, null>) => {
     setActiveDirection(direction)
@@ -178,18 +93,16 @@ export function Seeker () {
   }
 
   useShortcut('ArrowLeft', () => {
-    const target = playbackRef.current
-    if (target === null) return
+    if (playbackTarget === null) return
 
-    seekLeft(target)
+    seekLeft(playbackTarget)
     showOverlay('left')
   })
 
   useShortcut('ArrowRight', () => {
-    const target = playbackRef.current
-    if (target === null) return
+    if (playbackTarget === null) return
 
-    seekRight(target)
+    seekRight(playbackTarget)
     showOverlay('right')
   })
 

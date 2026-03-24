@@ -20,7 +20,9 @@ function PlayerButtonPortalContainer ({ children }: { children: React.ReactNode 
   })
 
   // TODO: 나중에 minimized에 별도 스타일로 버튼 추가?
-  const isMinimized = document.querySelector('section.Layout')?.getAttribute('data-layout-video-state') !== 'screen'
+  const dataLayoutVideoState = document.querySelector('section.Layout')?.getAttribute('data-layout-video-state')
+  const isMinimized = dataLayoutVideoState === 'aside' || dataLayoutVideoState === 'aside_float'
+
   return portalTarget && !isMinimized ? ReactDOM.createPortal(children, portalTarget) : null
 }
 
@@ -37,7 +39,10 @@ export function PlayerButtonRenderer () {
       }
     }, 100)
 
+    console.log('PlayerButtonRenderer mounted, searching for target element...')
+
     return () => {
+      console.log('PlayerButtonRenderer unmounted, clearing interval...')
       window.clearInterval(interval)
     }
   }, [])

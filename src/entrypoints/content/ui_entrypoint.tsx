@@ -17,7 +17,11 @@ export function RenderButtons () {
     div
   )
 
-  window.navigation?.addEventListener('navigate', () => {
+  window.navigation?.addEventListener('navigate', (event) => {
+    if (event.downloadRequest !== null) {
+      return
+    }
+
     root.unmount()
     div.remove()
 

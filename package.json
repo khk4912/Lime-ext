@@ -2,7 +2,7 @@
   "name": "lime-ext",
   "description": "씨미(ci.me)에 다양한 기능을 추가합니다.",
   "private": true,
-  "version": "0.2.1",
+  "version": "0.3.0",
   "type": "module",
   "scripts": {
     "dev": "wxt",

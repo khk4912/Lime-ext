@@ -45,7 +45,7 @@ export function PlayerButtonRenderer () {
     }
   }, [])
 
-  if (isLoading || (!options.rec && !options.pip && !options.screenshot && !options.seek)) {
+  if (isLoading) {
     return null
   }
 

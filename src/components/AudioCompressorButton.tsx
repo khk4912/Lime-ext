@@ -1,24 +1,34 @@
+import { useSyncExternalStore } from 'react'
 import ReactDOM from 'react-dom'
-import { useState, useEffect, useRef } from 'react'
 
-import { useOptions } from '@/providers/useOptions'
 import { CustomVJSButton } from './CustomVJSButton'
+import { usePortal } from '@/hooks/element'
+import { audioCompressorRuntime } from '@/features/audio-compressor/runtime'
+
 import EQIcon from '@/assets/eq.svg?react'
 
 const ActivatedColor = '#71ff34'
 
 function AudioCompressorButton () {
-  const [activated, setActivated] = useState(false)
+  const { hasVideo, isActive } = useSyncExternalStore(
+    (listener) => audioCompressorRuntime.subscribe(listener),
+    () => audioCompressorRuntime.getSnapshot()
+  )
 
   return (
     <CustomVJSButton
       className='lime-audio-compressor-button'
       title='오디오 컴프레서 활성화'
-      onClick={() => setActivated(!activated)}
+      onClick={() => {
+        void audioCompressorRuntime.setActive(!isActive)
+      }}
     >
       <EQIcon
-        style={{ padding: '3px' }}
-        fill={activated ? ActivatedColor : 'white'}
+        style={{
+          padding: '3px',
+          opacity: hasVideo ? 1 : 0.5
+        }}
+        fill={isActive ? ActivatedColor : 'white'}
       />
     </CustomVJSButton>
   )

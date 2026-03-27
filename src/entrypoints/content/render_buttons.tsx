@@ -1,6 +1,6 @@
 import { inject } from '@/utils/inject'
 
-import { AudioCompressorRenderer } from '@/components/AudioCompressorButton'
+import { AudioCompressorController } from '@/components/AudioCompressorController'
 import { PlayerButtonRenderer } from '@/components/PlayerButtonRenderer'
 import { SeekerRenderer } from '@/components/SeekerRenderer'
 import { OptionProvider } from '@/providers/OptionProvider'
@@ -13,6 +13,7 @@ export function RenderUIs () {
 
   let root = inject(
     <OptionProvider>
+      <AudioCompressorController />
       <PlayerButtonRenderer />
       <SeekerRenderer />
 
@@ -34,9 +35,9 @@ export function RenderUIs () {
     document.body.appendChild(div)
     root = inject(
       <OptionProvider>
+        <AudioCompressorController />
         <PlayerButtonRenderer />
         <SeekerRenderer />
-        <AudioCompressorRenderer />
       </OptionProvider>,
       div
     )

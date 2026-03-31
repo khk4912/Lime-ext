@@ -151,7 +151,7 @@ function SeekContainer ({ children }: { children: React.ReactNode }) {
     position: 'before',
     style: {
       position: 'absolute',
-      zIndex: 2,
+      zIndex: 1,
       top: '50%',
       left: '50%',
       transform: 'translate(-50%, -50%)',

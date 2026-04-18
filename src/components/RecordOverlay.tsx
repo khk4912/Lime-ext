@@ -45,7 +45,7 @@ function RecordOverlay () {
 function RecordOverlayContainer ({ children }: { children: React.ReactNode }) {
   const portal = usePortal({
     id: 'lime-record-overlay',
-    targetSelector: '#vjs_video_3',
+    targetSelector: '#vjs_video_7280',
     position: 'before',
     style: {
       position: 'absolute',
